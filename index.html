@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NIGHTDREAMERS · Eles Sonham Sobre Rodas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --laranja:   #FF6B1A;
+      --rosa:      #C0185A;
+      --dark:      #080608;
+      --dark2:     #0F0A0D;
+      --dark3:     #140C10;
+      --glass:     rgba(255,255,255,0.04);
+      --border:    rgba(255,107,26,0.18);
+      --border2:   rgba(192,24,90,0.18);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--dark);
+      color: #EEE8EC;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(to bottom, var(--laranja), var(--rosa));
+      border-radius: 2px;
+    }
+
+    .cursor-glow {
+      pointer-events: none;
+      position: fixed;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,107,26,0.07) 0%, transparent 70%);
+      transform: translate(-50%,-50%);
+      transition: left .12s ease, top .12s ease;
+      z-index: 9999;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 60px;
+      background: linear-gradient(to bottom, rgba(8,6,8,0.95), transparent);
+      transition: all .4s;
+    }
+    nav.scrolled {
+      background: rgba(8,6,8,0.96);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 60px;
+    }
+    .nav-logo-wrap { display: flex; align-items: center; gap: 12px; }
+    .nav-logo-img {
+      width: 36px; height: 36px; border-radius: 4px;
+      background: var(--glass); border: 1px dashed rgba(255,107,26,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .45rem; color: rgba(255,107,26,0.5);
+      letter-spacing: .05em; text-transform: uppercase; text-align: center;
+    }
+    .nav-logo {
+      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1rem;
+      letter-spacing: .22em;
+      background: linear-gradient(90deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: rgba(238,232,236,0.55); text-decoration: none; font-size: .76rem;
+      letter-spacing: .12em; text-transform: uppercase; font-weight: 500; transition: color .3s;
+    }
+    .nav-links a:hover { color: var(--laranja); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--laranja), var(--rosa));
+      color: #fff; padding: 10px 24px; border-radius: 2px;
+      font-size: .73rem; font-weight: 700; letter-spacing: .15em;
+      text-transform: uppercase; text-decoration: none; transition: box-shadow .3s, transform .2s;
+    }
+    .nav-cta:hover { box-shadow: 0 0 30px rgba(255,107,26,0.45); transform: translateY(-1px); }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative; height: 100vh; min-height: 700px;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(255,107,26,0.1) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 80% 20%, rgba(192,24,90,0.07) 0%, transparent 50%),
+        linear-gradient(180deg, #080608 0%, #0f0a0d 100%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,107,26,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,107,26,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 100%, black 0%, transparent 70%);
+    }
+    .road-lines {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 2px; height: 45%;
+    }
+    .road-line {
+      position: absolute; width: 2px;
+      background: linear-gradient(to bottom, transparent, var(--laranja), transparent);
+      border-radius: 2px; animation: roadMove 1.8s linear infinite;
+    }
+    .road-line:nth-child(1) { left: -60px; height: 80px; animation-delay: 0s; }
+    .road-line:nth-child(2) { left: -30px; height: 50px; animation-delay: .4s; background: linear-gradient(to bottom, transparent, var(--rosa), transparent); }
+    .road-line:nth-child(3) { left:  0px;  height: 100px; animation-delay: .1s; }
+    .road-line:nth-child(4) { left:  30px; height: 60px;  animation-delay: .7s; background: linear-gradient(to bottom, transparent, var(--rosa), transparent); }
+    .road-line:nth-child(5) { left:  60px; height: 80px;  animation-delay: .3s; }
+    @keyframes roadMove {
+      0%   { transform: translateY(-100%); opacity: 0; }
+      20%  { opacity: 1; } 80%  { opacity: 1; }
+      100% { transform: translateY(200%); opacity: 0; }
+    }
+    .hero-logo-placeholder {
+      width: 100px; height: 100px; border-radius: 8px;
+      background: rgba(255,107,26,0.06); border: 1px dashed rgba(255,107,26,0.35);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin: 0 auto 28px; gap: 6px;
+      opacity: 0; animation: fadeUp .8s .1s ease forwards;
+    }
+    .hero-logo-placeholder span:first-child { font-size: 1.6rem; }
+    .hero-logo-placeholder span:last-child {
+      font-size: .45rem; letter-spacing: .15em; text-transform: uppercase; color: rgba(255,107,26,0.45);
+    }
+    .hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+    .hero-edition {
+      font-family: 'Orbitron', sans-serif; font-size: .62rem; letter-spacing: .45em;
+      color: var(--laranja); text-transform: uppercase; margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      opacity: 0; animation: fadeUp .8s .25s ease forwards;
+    }
+    .hero-edition::before, .hero-edition::after {
+      content: ''; width: 50px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--laranja));
+    }
+    .hero-edition::after { background: linear-gradient(to left, transparent, var(--laranja)); }
+    .hero-title {
+      font-family: 'Orbitron', sans-serif; font-weight: 900;
+      font-size: clamp(3.2rem, 10vw, 7.5rem); line-height: .9; letter-spacing: -.01em; color: #fff;
+      opacity: 0; animation: fadeUp .8s .4s ease forwards;
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 0 30px rgba(255,107,26,0.4));
+    }
+    .hero-tagline {
+      margin-top: 20px; font-family: 'Orbitron', sans-serif; font-size: .7rem;
+      letter-spacing: .35em; text-transform: uppercase; color: rgba(255,107,26,0.6);
+      opacity: 0; animation: fadeUp .8s .55s ease forwards;
+    }
+    .hero-subtitle {
+      margin-top: 20px; font-size: .97rem; font-weight: 300; letter-spacing: .05em;
+      color: rgba(238,232,236,0.5); max-width: 460px; line-height: 1.75;
+      opacity: 0; animation: fadeUp .8s .65s ease forwards;
+    }
+    .hero-btns {
+      margin-top: 44px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp .8s .8s ease forwards;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--laranja), var(--rosa)); color: #fff;
+      padding: 16px 40px; font-family: 'Orbitron', sans-serif; font-size: .7rem;
+      font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+      text-decoration: none; border-radius: 2px; transition: all .3s; border: none; cursor: pointer;
+    }
+    .btn-primary:hover { box-shadow: 0 0 40px rgba(255,107,26,0.5), 0 0 80px rgba(192,24,90,0.2); transform: translateY(-2px); }
+    .btn-secondary {
+      background: transparent; color: #fff; padding: 16px 40px;
+      font-family: 'Orbitron', sans-serif; font-size: .7rem; font-weight: 700;
+      letter-spacing: .2em; text-transform: uppercase; text-decoration: none;
+      border-radius: 2px; border: 1px solid rgba(255,255,255,0.2); transition: all .3s;
+    }
+    .btn-secondary:hover { border-color: var(--laranja); color: var(--laranja); box-shadow: 0 0 20px rgba(255,107,26,0.15); }
+    .hero-scroll {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0; animation: fadeUp .8s 1.2s ease forwards; cursor: pointer;
+  
+}
+    .hero-scroll span { font-size: .6rem; letter-spacing: .3em; text-transform: uppercase; color: rgba(255,107,26,0.5); }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, rgba(255,107,26,0.5), transparent);
+      animation: scrollPulse 2s ease infinite;
+    }
+    @keyframes scrollPulse { 0%, 100% { transform: scaleY(1); opacity: 1; } 50% { transform: scaleY(.5); opacity: .4; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ─── STATS ─── */
+    .stats-strip {
+      background: var(--dark2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 36px 60px; display: grid; grid-template-columns: repeat(4, 1fr);
+    }
+    .stat-item { text-align: center; padding: 0 20px; border-right: 1px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Orbitron', sans-serif; font-size: 2.4rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1;
+    }
+    .stat-label { margin-top: 8px; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(238,232,236,0.38); }
+
+    /* ─── COUNTDOWN ─── */
+    #countdown {
+      background: var(--dark);
+      padding: 100px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #countdown::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 100%, rgba(255,107,26,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 20% 0%, rgba(192,24,90,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .countdown-inner { position: relative; z-index: 2; max-width: 860px; margin: 0 auto; }
+    .countdown-label {
+      font-family: 'Orbitron', sans-serif; font-size: .62rem; letter-spacing: .45em;
+      text-transform: uppercase; color: var(--laranja); margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    .countdown-label::before, .countdown-label::after {
+      content: ''; width: 40px; height: 1px; background: linear-gradient(to right, transparent, var(--laranja));
+    }
+    .countdown-label::after { background: linear-gradient(to left, transparent, var(--laranja)); }
+    .countdown-title {
+      font-family: 'Orbitron', sans-serif; font-weight: 900;
+      font-size: clamp(1.6rem, 4vw, 2.8rem); color: #fff; margin-bottom: 12px; line-height: 1.1;
+    }
+    .countdown-title span {
+      background: linear-gradient(135deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .countdown-date-info {
+      font-size: .82rem; color: rgba(238,232,236,0.38); letter-spacing: .1em;
+      margin-bottom: 56px; font-weight: 300;
+    }
+    .countdown-grid {
+      display: flex; justify-content: center; gap: 0; flex-wrap: wrap;
+    }
+    .countdown-block {
+      position: relative;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 36px 44px;
+      min-width: 160px;
+      margin: 4px;
+      overflow: hidden;
+      transition: border-color .3s;
+    }
+    .countdown-block:hover { border-color: rgba(255,107,26,0.4); }
+    .countdown-block::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(to right, var(--laranja), var(--rosa));
+      opacity: 0; transition: opacity .3s;
+    }
+    .countdown-block:hover::before { opacity: 1; }
+    .countdown-num {
+      font-family: 'Orbitron', sans-serif; font-weight: 900;
+      font-size: clamp(2.8rem, 6vw, 4.5rem); line-height: 1;
+      background: linear-gradient(135deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 0 20px rgba(255,107,26,0.3));
+      transition: transform .15s ease;
+    }
+    .countdown-num.flip { transform: scale(1.08); }
+    .countdown-unit {
+      margin-top: 10px; font-size: .6rem; letter-spacing: .35em;
+      text-transform: uppercase; color: rgba(238,232,236,0.35); font-weight: 500;
+    }
+    .countdown-sep {
+      display: flex; align-items: center; padding: 0 2px; margin-top: -8px;
+    }
+    .countdown-sep span {
+      font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900;
+      color: rgba(255,107,26,0.25); animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .countdown-ended {
+      font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      letter-spacing: .1em; padding: 40px 0;
+    }
+    .countdown-footer {
+      margin-top: 40px; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
+    }
+
+    /* ─── SECTION BASE ─── */
+    section { padding: 120px 60px; }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-family: 'Orbitron', sans-serif; font-size: .6rem; letter-spacing: .4em;
+      text-transform: uppercase; color: var(--laranja); margin-bottom: 24px;
+    }
+    .section-tag::before { content: ''; width: 30px; height: 1px; background: var(--laranja); }
+    .section-title {
+      font-family: 'Orbitron', sans-serif; font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 900; line-height: 1.05; color: #fff;
+    }
+    .section-title span {
+      background: linear-gradient(135deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .section-body { margin-top: 20px; font-size: .97rem; line-height: 1.8; color: rgba(238,232,236,0.5); max-width: 560px; }
+
+    /* ─── SOBRE ─── */
+    #sobre { background: var(--dark2); }
+    .sobre-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-top: 60px; }
+    .sobre-box {
+      background: var(--glass); border: 1px solid var(--border); border-radius: 4px;
+      padding: 48px 40px; position: relative; overflow: hidden; margin-bottom: 20px;
+    }
+    .sobre-box::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+      background: linear-gradient(to right, var(--laranja), var(--rosa), transparent);
+    }
+    .sobre-number {
+      font-family: 'Orbitron', sans-serif; font-size: 5.5rem; font-weight: 900;
+      color: rgba(255,107,26,0.06); line-height: 1; position: absolute; top: 16px; right: 24px;
+    }
+    .sobre-icon { font-size: 2.2rem; margin-bottom: 18px; }
+    .sobre-box h3 {
+      font-family: 'Orbitron', sans-serif; font-size: .9rem; font-weight: 700;
+      color: #fff; letter-spacing: .1em; margin-bottom: 12px;
+    }
+    .sobre-box p { font-size: .88rem; line-height: 1.75; color: rgba(238,232,236,0.5); }
+    .glow-line {
+      width: 100%; height: 1px;
+      background: linear-gradient(to right, var(--laranja), var(--rosa), transparent);
+      margin: 36px 0; opacity: .3;
+    }
+    .sobre-quote { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700; color: #fff; line-height: 1.45; }
+    .sobre-quote span {
+      background: linear-gradient(90deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* ─── GALERIA ─── */
+    #galeria { background: var(--dark); }
+    .galeria-header { text-align: center; margin-bottom: 60px; }
+    .galeria-header .section-tag { justify-content: center; }
+    .galeria-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+    .galeria-item {
+      position: relative; aspect-ratio: 4/3;
+      background: var(--glass); border: 1px dashed rgba(255,107,26,0.2); border-radius: 2px;
+      overflow: hidden; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+      cursor: pointer; transition: border-color .3s, background .3s;
+    }
+    .galeria-item:hover { border-color: rgba(255,107,26,0.5); background: rgba(255,107,26,0.04); }
+    .galeria-item.destaque { grid-column: span 2; aspect-ratio: 16/7; }
+    .galeria-placeholder-icon { font-size: 2rem; opacity: .35; }
+    .galeria-placeholder-txt { font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,107,26,0.4); text-align: center; padding: 0 20px; }
+    .galeria-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+
+    /* ─── EDIÇÕES ─── */
+    #edicoes { background: var(--dark2); }
+    .edicoes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 60px; }
+    .edicao-card {
+      background: var(--glass); border: 1px solid rgba(255,255,255,0.06); border-radius: 4px;
+      padding: 40px; position: relative; overflow: hidden; transition: border-color .3s, transform .3s;
+    }
+    .edicao-card:hover { border-color: rgba(255,107,26,0.3); transform: translateY(-4px); }
+    .edicao-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 120%, rgba(255,107,26,0.05) 0%, transparent 60%);
+      opacity: 0; transition: opacity .3s;
+    }
+    .edicao-card:hover::after { opacity: 1; }
+    .ed-num { font-family: 'Orbitron', sans-serif; font-size: .62rem; letter-spacing: .4em; color: var(--laranja); margin-bottom: 14px; }
+    .ed-date { font-size: .72rem; letter-spacing: .1em; color: rgba(192,24,90,0.7); margin-bottom: 16px; font-weight: 500; }
+    .ed-title { font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 900; color: #fff; margin-bottom: 16px; line-height: 1.2; }
+    .ed-desc { font-size: .88rem; line-height: 1.75; color: rgba(238,232,236,0.5); margin-bottom: 24px; }
+    .ed-stats { display: flex; gap: 24px; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px; }
+    .ed-stat strong {
+      display: block; font-family: 'Orbitron', sans-serif; font-size: 1.2rem;
+      background: linear-gradient(135deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .ed-stat span { font-size: .68rem; letter-spacing: .1em; color: rgba(238,232,236,0.32); text-transform: uppercase; }
+    .edicao-card.proxima {
+      border-color: rgba(255,107,26,0.28);
+      background: linear-gradient(135deg, rgba(255,107,26,0.04), rgba(192,24,90,0.03));
+    }
+    .edicao-card.proxima .ed-badge {
+      display: inline-flex; align-items: center;
+      background: linear-gradient(135deg, var(--laranja), var(--rosa));
+      color: #fff; font-size: .6rem; font-weight: 700; letter-spacing: .2em;
+      text-transform: uppercase; padding: 4px 14px; border-radius: 2px; margin-bottom: 16px;
+    }
+    .pulse-dot {
+      display: inline-block; width: 7px; height: 7px; background: #fff; border-radius: 50%;
+      margin-right: 8px; animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: .5; } }
+
+    /* ─── ORGANIZADORES ─── */
+    #organizadores { background: var(--dark); }
+    .org-header { text-align: center; margin-bottom: 70px; }
+    .org-header .section-tag { justify-content: center; }
+    .org-header .section-body { margin: 16px auto 0; text-align: center; }
+    .org-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 900px; margin: 0 auto; }
+    .org-card {
+      background: var(--glass); border: 1px solid var(--border); border-radius: 4px;
+      padding: 48px 40px; position: relative; overflow: hidden;
+      transition: transform .3s, border-color .3s; text-align: center;
+    }
+    .org-card:hover { transform: translateY(-5px); border-color: rgba(255,107,26,0.4); }
+    .org-card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+      background: linear-gradient(to right, var(--laranja), var(--rosa));
+    }
+    .org-avatar {
+      width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 24px;
+      background: rgba(255,107,26,0.06); border: 2px dashed rgba(255,107,26,0.35);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-size: .42rem; letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,107,26,0.45); gap: 4px; overflow: hidden;
+    }
+    .org-avatar-icon { font-size: 1.8rem; }
+    .org-name { font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 900; color: #fff; letter-spacing: .1em; margin-bottom: 6px; }
+    .org-role {
+      font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+      background: linear-gradient(90deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 20px;
+    }
+    .org-desc { font-size: .87rem; line-height: 1.75; color: rgba(238,232,236,0.5); margin-bottom: 28px; }
+    .org-social {
+      display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+      color: rgba(238,232,236,0.55); font-size: .78rem; letter-spacing: .08em;
+      border: 1px solid rgba(255,107,26,0.2); padding: 8px 18px; border-radius: 2px; transition: all .3s;
+    }
+    .org-social:hover { color: var(--laranja); border-color: rgba(255,107,26,0.5); box-shadow: 0 0 16px rgba(255,107,26,0.15); }
+
+    /* ─── PROPOSTA ─── */
+    #proposta { background: var(--dark2); }
+    .proposta-intro { max-width: 700px; margin: 0 auto 80px; text-align: center; }
+    .proposta-intro .section-tag { justify-content: center; }
+    .proposta-intro .section-body { margin: 16px auto 0; text-align: center; }
+    .pilares-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); }
+    .pilar { background: var(--dark2); padding: 48px 38px; position: relative; overflow: hidden; transition: background .3s; }
+    .pilar:hover { background: var(--dark3); }
+    .pilar::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0;
+      background: linear-gradient(to bottom, var(--laranja), var(--rosa)); transition: height .4s ease;
+    }
+    .pilar:hover::before { height: 100%; }
+    .pilar-icon { font-size: 2rem; margin-bottom: 22px; display: block; }
+    .pilar h3 { font-family: 'Orbitron', sans-serif; font-size: .82rem; font-weight: 700; color: #fff; letter-spacing: .1em; margin-bottom: 14px; text-transform: uppercase; }
+    .pilar p { font-size: .86rem; line-height: 1.75; color: rgba(238,232,236,0.48); }
+
+    /* ─── PÚBLICO ─── */
+    #publico { background: var(--dark); }
+    .publico-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; margin-top: 60px; }
+    .publico-list { list-style: none; margin-top: 32px; }
+    .publico-list li {
+      display: flex; align-items: flex-start; gap: 16px; padding: 18px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05); font-size: .93rem;
+      color: rgba(238,232,236,0.62); line-height: 1.6;
+    }
+    .publico-list li::before {
+      content: '→';
+      background: linear-gradient(135deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      font-weight: 700; flex-shrink: 0; margin-top: 2px;
+    }
+    .publico-highlight {
+      background: var(--glass); border: 1px solid var(--border); border-radius: 4px;
+      padding: 48px 40px; position: sticky; top: 120px;
+    }
+    .publico-highlight::before {
+      content: ''; position: absolute; top: 0; right: 0; width: 2px; height: 100%;
+      background: linear-gradient(to bottom, var(--laranja), var(--rosa), transparent); border-radius: 0 4px 4px 0;
+    }
+    .publico-highlight h3 { font-family: 'Orbitron', sans-serif; font-size: .82rem; font-weight: 700; color: var(--laranja); letter-spacing: .2em; text-transform: uppercase; margin-bottom: 28px; }
+    .highlight-item { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .highlight-item:last-child { border: none; }
+    .h-icon { font-size: 1.4rem; }
+    .h-text strong { display: block; font-size: .87rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .h-text span { font-size: .76rem; color: rgba(238,232,236,0.38); }
+
+    /* ─── MAPA ─── */
+    #mapa { background: var(--dark2); padding: 100px 60px; }
+    .mapa-inner {
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px; align-items: center;
+    }
+    .mapa-info { }
+    .mapa-info .section-body { max-width: 100%; }
+    .mapa-detalhe {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .mapa-detalhe:last-of-type { border: none; }
+    .mapa-detalhe-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .mapa-detalhe-text strong { display: block; font-size: .88rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .mapa-detalhe-text span { font-size: .78rem; color: rgba(238,232,236,0.4); line-height: 1.5; }
+    .mapa-visual {
+      position: relative; border-radius: 6px; overflow: hidden;
+      border: 1px solid var(--border); box-shadow: 0 0 60px rgba(255,107,26,0.08);
+    }
+    .mapa-visual::before {
+      content: ''; position: absolute; inset: 0;  pointer-events: none;
+      box-shadow: inset 0 0 0 1px rgba(255,107,26,0.2); border-radius: 6px;
+    }
+    .mapa-visual iframe {
+      width: 100%; height: 400px; border: none; display: block;
+      filter: grayscale(100%) invert(92%) hue-rotate(170deg) brightness(0.85) contrast(0.9);
+      border-radius: 6px;
+    }
+    .mapa-badge {
+      position: absolute; bottom: 16px; left: 16px; z-index: 2;
+      background: rgba(8,6,8,0.92); border: 1px solid var(--border); border-radius: 4px;
+      padding: 10px 16px; backdrop-filter: blur(10px);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .mapa-badge-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--laranja); box-shadow: 0 0 10px var(--laranja); animation: pulse 2s infinite;
+    }
+    .mapa-badge-text { font-family: 'Orbitron', sans-serif; font-size: .6rem; letter-spacing: .15em; color: rgba(238,232,236,0.7); }
+
+    /* ─── PARCEIROS ─── */
+    #parceiros { background: var(--dark); }
+    .parceiros-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-top: 60px; }
+    .oportunidade-item { padding: 30px; border: 1px solid rgba(255,255,255,0.06); border-radius: 4px; margin-bottom: 16px; overflow: hidden; transition: border-color .3s; }
+    .oportunidade-item:hover { border-color: rgba(255,107,26,0.3); }
+    .op-tag { font-family: 'Orbitron', sans-serif; font-size: .57rem; letter-spacing: .35em; color: var(--laranja); text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .op-tag::before { content: ''; width: 18px; height: 1px; background: var(--laranja); }
+    .oportunidade-item h3 { font-family: 'Orbitron', sans-serif; font-size: .86rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .oportunidade-item p { font-size: .82rem; color: rgba(238,232,236,0.42); line-height: 1.6; }
+    .parceiros-visual { background: var(--glass); border: 1px solid var(--border); border-radius: 4px; padding: 48px 40px; text-align: center; }
+    .parceiros-visual h3 { font-family: 'Orbitron', sans-serif; font-size: .82rem; color: var(--laranja); letter-spacing: .2em; text-transform: uppercase; margin-bottom: 30px; }
+    .beneficios-list { list-style: none; text-align: left; }
+    .beneficios-list li { display: flex; gap: 12px; align-items: flex-start; padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: .86rem; color: rgba(238,232,236,0.58); line-height: 1.5; }
+    .beneficios-list li::before {
+      content: '◆';
+      background: linear-gradient(135deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      font-size: .5rem; margin-top: 5px; flex-shrink: 0;
+    }
+
+    /* ─── CONTATO ─── */
+    #contato { background: var(--dark2); text-align: center; position: relative; overflow: hidden; }
+    #contato::before {
+      content: 'ND'; position: absolute; font-family: 'Orbitron', sans-serif;
+      font-size: 20vw; font-weight: 900; color: rgba(255,107,26,0.025);
+      top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+    }
+    .contato-inner { position: relative; z-index: 2; max-width: 640px; margin: 0 auto; }
+    .contato-inner .section-tag { justify-content: center; }
+    .contato-inner .section-body { margin: 20px auto 48px; max-width: 480px; text-align: center; }
+    .contato-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 48px; }
+    .contato-card {
+      background: var(--glass); border: 1px solid var(--border); border-radius: 4px;
+      padding: 28px 20px; text-decoration: none; transition: transform .3s, border-color .3s;
+    }
+    .contato-card:hover { transform: translateY(-4px); border-color: rgba(255,107,26,0.45); }
+    .contato-card .c-icon { font-size: 1.5rem; margin-bottom: 12px; display: block; }
+    .contato-card .c-label { font-size: .64rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(238,232,236,0.32); margin-bottom: 6px; }
+    .contato-card .c-value { font-size: .84rem; font-weight: 500; color: #fff; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--dark); border-top: 1px solid var(--border);
+      padding: 40px 60px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-left { display: flex; align-items: center; gap: 14px; }
+    .footer-logo-img {
+      width: 28px; height: 28px; border-radius: 3px; background: var(--glass);
+      border: 1px dashed rgba(255,107,26,0.35); display: flex; align-items: center; justify-content: center;
+      font-size: .38rem; color: rgba(255,107,26,0.4); letter-spacing: .05em; text-transform: uppercase; text-align: center;
+    }
+    .footer-logo {
+      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: .88rem; letter-spacing: .28em;
+      background: linear-gradient(90deg, var(--laranja), var(--rosa));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .footer-tagline { font-family: 'Orbitron', sans-serif; font-size: .56rem; letter-spacing: .28em; color: rgba(255,107,26,0.38); text-transform: uppercase; }
+    .footer-copy { font-size: .7rem; color: rgba(238,232,236,0.22); letter-spacing: .05em; }
+
+    /* ─── REVEAL ─── */
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 18px 24px; } nav.scrolled { padding: 12px 24px; }
+      .nav-links { display: none; }
+      section, #countdown, #mapa { padding: 80px 24px; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); gap: 24px; padding: 36px 24px; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 24px; }
+      .sobre-grid, .publico-grid, .parceiros-intro, .mapa-inner { grid-template-columns: 1fr; gap: 40px; }
+      .edicoes-grid, .org-grid { grid-template-columns: 1fr; }
+      .pilares-grid { grid-template-columns: 1fr; }
+      .contato-cards { grid-template-columns: 1fr; }
+      .galeria-grid { grid-template-columns: repeat(2, 1fr); }
+      .galeria-item.destaque { grid-column: span 2; }
+      footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+      .countdown-grid { gap: 8px; }
+      .countdown-block { padding: 28px 24px; min-width: 120px; }
+      .countdown-sep { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ═══ NAV ═══ -->
+<nav id="mainNav">
+  <div class="nav-logo-wrap">
+    <div class="nav-logo-img">LOGO</div>
+    <div class="nav-logo">NIGHTDREAMERS</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#sobre">O Evento</a></li>
+    <li><a href="#galeria">Galeria</a></li>
+    <li><a href="#edicoes">Edições</a></li>
+    <li><a href="#organizadores">Organização</a></li>
+    <li><a href="#mapa">Local</a></li>
+    <li><a href="#parceiros">Parceiros</a></li>
+  </ul>
+  <a href="#contato" class="nav-cta">Fale Conosco</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="road-lines">
+    <div class="road-line"></div><div class="road-line"></div><div class="road-line"></div>
+    <div class="road-line"></div><div class="road-line"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-logo-placeholder">
+      <span>🏎️</span><span>Inserir Logo</span>
+    </div>
+    <div class="hero-edition">Eventos Automotivos · Cotia / VGP</div>
+    <h1 class="hero-title">NIGHT<br/><span>DREAMERS</span></h1>
+    <p class="hero-tagline">Eles sonham sobre rodas</p>
+    <p class="hero-subtitle">Todos os carros. Todos os estilos.<br/>A cultura automotiva em sua mais pura essência.</p>
+    <div class="hero-btns">
+      <a href="#countdown" class="btn-primary">Ver Próximo Evento</a>
+      <a href="#parceiros" class="btn-secondary">Ser Parceiro</a>
+    </div>
+  </div>
+  <div class="hero-scroll" onclick="document.getElementById('stats').scrollIntoView({behavior:'smooth'})">
+    <span>Scroll</span><div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══ STATS ═══ -->
+<div class="stats-strip" id="stats">
+  <div class="stat-item reveal"><div class="stat-num" data-target="2" data-suffix="">0</div><div class="stat-label">Edições Realizadas</div></div>
+  <div class="stat-item reveal"><div class="stat-num" data-target="100" data-suffix="+">0</div><div class="stat-label">Carros por Edição</div></div>
+  <div class="stat-item reveal"><div class="stat-num" data-target="3" data-suffix="ª">0</div><div class="stat-label">Próxima Edição</div></div>
+  <div class="stat-item reveal"><div class="stat-num" data-target="100" data-suffix="%">0</div><div class="stat-label">Paixão Automotiva</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     COUNTDOWN — 3ª EDIÇÃO
+     ✏️  PARA ALTERAR A DATA:
+         Mude a linha abaixo no <script> no final da página:
+         const EVENT_DATE = new Date('2025-08-16T20:00:00');
+         Formato: AAAA-MM-DDTHH:MM:SS  (ano-mês-diaThora:min:seg)
+════════════════════════════════════════════════════════════ -->
+<section id="countdown">
+  <div class="countdown-inner">
+    <div class="countdown-label reveal">3ª Edição</div>
+    <h2 class="countdown-title reveal">A espera está<br/><span>contando...</span></h2>
+    <p class="countdown-date-info reveal" id="countdownDateDisplay">
+      <!-- A data é exibida automaticamente pelo JS -->
+    </p>
+
+    <div class="countdown-grid reveal" id="countdownGrid">
+      <div class="countdown-block">
+        <div class="countdown-num" id="cd-days">00</div>
+        <div class="countdown-unit">Dias</div>
+      </div>
+      <div class="countdown-sep"><span>:</span></div>
+      <div class="countdown-block">
+        <div class="countdown-num" id="cd-hours">00</div>
+        <div class="countdown-unit">Horas</div>
+      </div>
+      <div class="countdown-sep"><span>:</span></div>
+      <div class="countdown-block">
+        <div class="countdown-num" id="cd-minutes">00</div>
+        <div class="countdown-unit">Minutos</div>
+      </div>
+      <div class="countdown-sep"><span>:</span></div>
+      <div class="countdown-block">
+        <div class="countdown-num" id="cd-seconds">00</div>
+        <div class="countdown-unit">Segundos</div>
+      </div>
+    </div>
+
+    <div class="countdown-footer reveal">
+      <a href="#mapa" class="btn-primary">Ver o Local →</a>
+      <a href="#contato" class="btn-secondary">Quero ser Parceiro</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SOBRE ═══ -->
+<section id="sobre">
+  <div class="sobre-grid">
+    <div class="reveal">
+      <div class="section-tag">Sobre o Evento</div>
+      <h2 class="section-title">Mais do que<br/><span>um encontro</span></h2>
+      <p class="section-body">
+        O NIGHTDREAMERS nasceu da paixão de dois jovens entusiastas que vivem o mundo automotivo de verdade.
+        Aqui, <strong style="color:#fff;">todos os carros são bem-vindos</strong> — todos os estilos, todas as histórias.
+        Esse é o nosso diferencial: trazer a cultura automotiva em sua mais pura essência.
+      </p>
+      <p class="section-body" style="margin-top:16px;">
+        Eventos organizados, entrega de adesivos, muita conversa boa, troca de experiência e a liberdade de trazer a família. Aqui o automotivo é vivido com amor.
+      </p>
+      <div class="glow-line"></div>
+      <blockquote class="sobre-quote">
+        "Não é só sobre carros —<br/>
+        <span>é sobre quem você é quando dirige."</span>
+      </blockquote>
+    </div>
+    <div class="sobre-boxes reveal">
+      <div class="sobre-box">
+        <div class="sobre-number">01</div>
+        <div class="sobre-icon">🚗</div>
+        <h3>Todos os Estilos</h3>
+        <p>Rebaixados, tunados, clássicos, esportivos, JDM, americanos — qualquer carro tem seu lugar aqui. A diversidade é o que torna cada edição única.</p>
+      </div>
+      <div class="sobre-box">
+        <div class="sobre-number">02</div>
+        <div class="sobre-icon">🌙</div>
+        <h3>A Vibe da Noite</h3>
+        <p>Os primeiros eventos foram à noite — e a atmosfera foi incrível. Uma vibe diferente, projetada para criar momentos que ficam na memória.</p>
+      </div>
+      <div class="sobre-box">
+        <div class="sobre-number">03</div>
+        <div class="sobre-icon">📍</div>
+        <h3>Cotia / Vargem Grande Paulista</h3>
+        <p>Eventos realizados na região da Rodovia Raposo Tavares, km 38–39. Um cenário que combina com a energia do NIGHTDREAMERS.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ GALERIA ═══ -->
+<section id="galeria">
+  <div class="galeria-header reveal">
+    <div class="section-tag">Memórias</div>
+    <h2 class="section-title">Quem esteve <span>sabe</span></h2>
+    <p class="section-body" style="margin:16px auto 0;text-align:center;">Muitos projetos, muitos estilos, muita história. Veja como foram nossas edições.</p>
+  </div>
+  <div class="galeria-grid reveal">
+    <div class="galeria-item destaque">
+      <span class="galeria-placeholder-icon">📷</span>
+      <span class="galeria-placeholder-txt">Foto destaque — trocar por imagem real</span>
+    </div>
+    <div class="galeria-item">
+      <span class="galeria-placeholder-icon">🚗</span>
+      <span class="galeria-placeholder-txt">Foto dos carros</span>
+    </div>
+    <div class="galeria-item">
+      <span class="galeria-placeholder-icon">🚗</span>
+      <span class="galeria-placeholder-txt">Foto dos carros</span>
+    </div>
+    <div class="galeria-item">
+      <span class="galeria-placeholder-icon">🌙</span>
+      <span class="galeria-placeholder-txt">Foto noturna</span>
+    </div>
+    <div class="galeria-item">
+      <span class="galeria-placeholder-icon">🤝</span>
+      <span class="galeria-placeholder-txt">Foto do público</span>
+    </div>
+    <div class="galeria-item destaque">
+      <span class="galeria-placeholder-icon">📷</span>
+      <span class="galeria-placeholder-txt">Foto destaque — trocar por imagem real</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EDIÇÕES ═══ -->
+<section id="edicoes">
+  <div class="reveal">
+    <div class="section-tag">Histórico</div>
+    <h2 class="section-title">Nossas <span>Edições</span></h2>
+  </div>
+  <div class="edicoes-grid">
+    <div class="edicao-card reveal">
+      <div class="ed-num">EDIÇÃO Nº 001</div>
+      <div class="ed-date">📅 10 de Janeiro de 2025</div>
+      <div class="ed-title">O Começo<br/>de Tudo</div>
+      <p class="ed-desc">A primeira edição que provou que a ideia era grande. Uma noite histórica com muitos projetos, muita conversa boa e uma vibe que ninguém esperava que fosse tão grande.</p>
+      <div class="ed-stats">
+        <div class="ed-stat"><strong>+100</strong><span>Carros</span></div>
+        <div class="ed-stat"><strong>✔</strong><span>Realizada</span></div>
+        <div class="ed-stat"><strong>🔥</strong><span>Histórica</span></div>
+      </div>
+    </div>
+    <div class="edicao-card reveal">
+      <div class="ed-num">EDIÇÃO Nº 002</div>
+      <div class="ed-date">📅 20 de Novembro de 2025</div>
+      <div class="ed-title">Maior.<br/>Melhor.</div>
+      <p class="ed-desc">A segunda edição elevou o nível em tudo — mais carros, mais gente, mais parceiros. Confirmou que o NIGHTDREAMERS é um movimento que só cresce.</p>
+      <div class="ed-stats">
+        <div class="ed-stat"><strong>+100</strong><span>Carros</span></div>
+        <div class="ed-stat"><strong>✔</strong><span>Realizada</span></div>
+        <div class="ed-stat"><strong>📈</strong><span>Crescimento</span></div>
+      </div>
+    </div>
+    <div class="edicao-card proxima reveal" style="grid-column:1/-1;">
+      <span class="ed-badge"><span class="pulse-dot"></span>Em Breve</span>
+      <div class="ed-num">EDIÇÃO Nº 003</div>
+      <div class="ed-title">A Terceira é<br/><span style="background:linear-gradient(135deg,var(--laranja),var(--rosa));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">A Maior.</span></div>
+      <p class="ed-desc">Estamos construindo a edição mais ambiciosa. Nova produção, novos parceiros, mais carros — e a mesma essência que faz esse evento ser único. Fique de olho.</p>
+      <div class="ed-stats">
+        <div class="ed-stat"><strong>3ª</strong><span>Edição</span></div>
+        <div class="ed-stat"><strong>2025</strong><span>Ano</span></div>
+        <div class="ed-stat"><strong>Em Breve</strong><span>Data</span></div>
+        <div class="ed-stat"><strong>🤝</strong><span>Parceiros Abertos</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ORGANIZADORES ═══ -->
+<section id="organizadores">
+  <div class="org-header reveal">
+    <div class="section-tag">Por trás do evento</div>
+    <h2 class="section-title">Os <span>Organizadores</span></h2>
+    <p class="section-body">Dois jovens entusiastas que vivem o mundo automotivo de coração — e fazem um evento acessível, com paixão, para todos.</p>
+  </div>
+  <div class="org-grid">
+    <div class="org-card reveal">
+      <div class="org-avatar"><span class="org-avatar-icon">😈</span><span>Inserir Logo</span></div>
+      <div class="org-name">Devil's Garage</div>
+      <div class="org-role">Co-organizador · Nightdreamers</div>
+      <p class="org-desc">Entusiasta do mundo automotivo, o Devil's Garage traz a identidade e a energia que tornam o NIGHTDREAMERS especial. Vive o hobby de verdade — e isso se reflete em cada detalhe do evento.</p>
+      <a href="https://instagram.com/SEU_IG_DEVILS" target="_blank" class="org-social"><span>📸</span> @devilsgarage</a>
+    </div>
+    <div class="org-card reveal">
+      <div class="org-avatar"><span class="org-avatar-icon">🔧</span><span>Inserir Logo</span></div>
+      <div class="org-name">Garagem do Zanolla</div>
+      <div class="org-role">Co-organizador · Nightdreamers</div>
+      <p class="org-desc">Apaixonado por carros e por pessoas, a Garagem do Zanolla é a alma organizacional do evento — garantindo que cada edição seja bem estruturada e inesquecível para todos.</p>
+      <a href="https://instagram.com/SEU_IG_ZANOLLA" target="_blank" class="org-social"><span>📸</span> @garagemzanolla</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROPOSTA ═══ -->
+<section id="proposta">
+  <div class="proposta-intro reveal">
+    <div class="section-tag">Nossa Proposta</div>
+    <h2 class="section-title">Por que o<br/><span>NIGHTDREAMERS</span><br/>é diferente?</h2>
+    <p class="section-body">Não criamos mais um evento de carros. Criamos um espaço onde qualquer entusiasta se sente em casa. A cultura automotiva celebrada em sua forma mais pura.</p>
+  </div>
+  <div class="pilares-grid">
+    <div class="pilar reveal"><span class="pilar-icon">🚗</span><h3>Todos São Bem-vindos</h3><p>Rebaixado, tunado, clássico, elétrico — não importa. Todos os carros e estilos têm lugar. Esse é o nosso maior diferencial.</p></div>
+    <div class="pilar reveal"><span class="pilar-icon">❤️</span><h3>Feito de Coração</h3><p>Organizado por entusiastas que vivem o automotivo. Cada detalhe é pensado com paixão genuína — e o público sente a diferença.</p></div>
+    <div class="pilar reveal"><span class="pilar-icon">🌙</span><h3>A Experiência Noturna</h3><p>A noite transforma tudo. Luzes, reflexos, projetos iluminados — uma atmosfera que só quem esteve sabe descrever.</p></div>
+    <div class="pilar reveal"><span class="pilar-icon">👨‍👩‍👧</span><h3>Espaço para Todos</h3><p>Família é bem-vinda. Um encontro acessível e acolhedor onde crianças, pais, casais e amigos vivem o automotivo juntos.</p></div>
+    <div class="pilar reveal"><span class="pilar-icon">🏷️</span><h3>Adesivos & Cultura</h3><p>Entrega de adesivos, troca de experiências e aquela conversa boa que só acontece entre quem realmente vive o hobby.</p></div>
+    <div class="pilar reveal"><span class="pilar-icon">📈</span><h3>Crescimento Real</h3><p>Duas edições com mais de 100 carros cada uma, e a terceira chegando maior. O NIGHTDREAMERS cresce porque é genuíno.</p></div>
+  </div>
+</section>
+
+<!-- ═══ PÚBLICO ═══ -->
+<section id="publico">
+  <div class="publico-grid">
+    <div>
+      <div class="section-tag reveal">Nosso Público</div>
+      <h2 class="section-title reveal">Quem aparece<br/><span>na pista</span></h2>
+      <ul class="publico-list">
+        <li class="reveal">Entusiastas e apaixonados que tratam o carro como extensão da própria identidade</li>
+        <li class="reveal">Jovens adultos conectados, consumidores ativos de cultura automotiva</li>
+        <li class="reveal">Donos de oficinas, estúdios de personalização e garagens especializadas</li>
+        <li class="reveal">Influenciadores e criadores de conteúdo do nicho automotivo</li>
+        <li class="reveal">Famílias que curtem o hobby junto — pais, mães, filhos e amigos</li>
+        <li class="reveal">Profissionais do setor — peças, acessórios, som automotivo e mais</li>
+      </ul>
+    </div>
+    <div class="publico-highlight reveal">
+      <h3>Por que esse público importa</h3>
+      <div class="highlight-item"><span class="h-icon">💰</span><div class="h-text"><strong>Investe no hobby</strong><span>Público que gasta com seu carro — peças, acessórios, som, estética</span></div></div>
+      <div class="highlight-item"><span class="h-icon">📱</span><div class="h-text"><strong>Altamente engajado</strong><span>Compartilha e gera conteúdo orgânico para marcas parceiras</span></div></div>
+      <div class="highlight-item"><span class="h-icon">🎯</span><div class="h-text"><strong>Nicho específico e fiel</strong><span>Difícil de alcançar em outras mídias — aqui você está no meio deles</span></div></div>
+      <div class="highlight-item"><span class="h-icon">🗣️</span><div class="h-text"><strong>Boca a boca poderoso</strong><span>Comunidade que recomenda e confia nas marcas do evento</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAPA — LOCALIZAÇÃO
+     Região: Rodovia Raposo Tavares, km 38-39
+     Vargem Grande Paulista / Cotia — SP
+════════════════════════════════════════════════════════════ -->
+<section id="mapa">
+  <div class="mapa-inner">
+    <div class="mapa-info reveal">
+      <div class="section-tag">Localização</div>
+      <h2 class="section-title">Onde<br/><span>acontece</span></h2>
+      <p class="section-body">Os eventos acontecem na região da Rodovia Raposo Tavares, km 38–39 — entre Cotia e Vargem Grande Paulista, SP.</p>
+
+      <div style="margin-top:32px;">
+        <div class="mapa-detalhe">
+          <span class="mapa-detalhe-icon">📍</span>
+          <div class="mapa-detalhe-text">
+            <strong>Vargem Grande Paulista / Cotia</strong>
+            <span>Rodovia Raposo Tavares — km 38 a 39<br/>São Paulo · SP</span>
+          </div>
+        </div>
+        <div class="mapa-detalhe">
+          <span class="mapa-detalhe-icon">🚗</span>
+          <div class="mapa-detalhe-text">
+            <strong>Fácil acesso pela Raposo Tavares</strong>
+            <span>A ~40 minutos do centro de São Paulo</span>
+          </div>
+        </div>
+        <div class="mapa-detalhe">
+          <span class="mapa-detalhe-icon">🅿️</span>
+          <div class="mapa-detalhe-text">
+            <strong>Estacionamento no local</strong>
+            <span>Espaço amplo para todos os carros do evento</span>
+          </div>
+        </div>
+        <div class="mapa-detalhe">
+          <span class="mapa-detalhe-icon">📅</span>
+          <div class="mapa-detalhe-text">
+            <strong>Endereço exato divulgado em breve</strong>
+            <span>Siga o Instagram para não perder nada</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mapa-visual reveal">
+      <!--
+        MAPA: Rodovia Raposo Tavares, km 38-39 — VGP / Cotia
+        O iframe abaixo já está apontando para a região correta.
+        Para personalizar o ponto exato, acesse:
+        maps.google.com → encontre o local → Compartilhar → Incorporar um mapa → copie o iframe
+      -->
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14706.123456789!2d-46.9900!3d-23.5950!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94cf00000000001%3A0x0!2sRodovia+Raposo+Tavares%2C+km+38%2C+Vargem+Grande+Paulista%2C+SP!5e0!3m2!1spt-BR!2sbr!4v1700000000000"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Localização Nightdreamers — Vargem Grande Paulista / Cotia">
+      </iframe>
+      <div class="mapa-badge">
+        <div class="mapa-badge-dot"></div>
+        <span class="mapa-badge-text">Raposo Tavares · KM 38–39</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PARCEIROS ═══ -->
+<section id="parceiros">
+  <div class="parceiros-intro">
+    <div>
+      <div class="section-tag reveal">Seja Parceiro</div>
+      <h2 class="section-title reveal">Vamos construir<br/>a <span>3ª edição</span><br/>juntos</h2>
+      <p class="section-body reveal">Buscamos parceiros que compartilhem da mesma paixão. Se sua marca quer estar perto de um público automotivo real, engajado e crescente — vamos conversar.</p>
+      <div style="margin-top:48px;">
+        <div class="oportunidade-item reveal"><div class="op-tag">Patrocínio</div><h3>Branding & Visibilidade</h3><p>Sua marca em destaque — banners, espaços exclusivos, menção nas comunicações e presença digital antes, durante e após o evento.</p></div>
+        <div class="oportunidade-item reveal"><div class="op-tag">Espaço / Local</div><h3>Cessão de Espaço</h3><p>Buscamos locações na região de Cotia/VGP com apelo visual e estrutura para o volume esperado.</p></div>
+        <div class="oportunidade-item reveal"><div class="op-tag">Produto & Apoio</div><h3>Fornecedores & Apoiadores</h3><p>Peças automotivas, som, alimentação, bebidas, merchandise — tudo que agrega valor à experiência.</p></div>
+      </div>
+    </div>
+    <div class="parceiros-visual reveal">
+      <h3>O que você ganha</h3>
+      <ul class="beneficios-list">
+        <li>Visibilidade direta com público automotivo engajado e apaixonado</li>
+        <li>Exposição nas redes sociais do evento e dos organizadores</li>
+        <li>Presença física com espaço para ativação de marca no evento</li>
+        <li>Associação a um evento com identidade forte e crescimento real</li>
+        <li>Conteúdo fotográfico de alta qualidade com a sua marca</li>
+        <li>Acesso a uma comunidade fiel que confia nas marcas do NIGHTDREAMERS</li>
+        <li>Networking com outros parceiros do setor automotivo</li>
+        <li>Adesivos e material de divulgação com menção ao parceiro</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTATO ═══ -->
+<section id="contato">
+  <div class="contato-inner">
+    <div class="section-tag reveal">Contato</div>
+    <h2 class="section-title reveal">Pronto para<br/><span>fazer parte?</span></h2>
+    <p class="section-body reveal">Quer ser parceiro, expor seu carro ou ficar por dentro da próxima edição? Fala com a gente — a 3ª edição está sendo construída agora.</p>
+    <div class="contato-cards reveal">
+      <a href="https://wa.me/SEUNUMERO" target="_blank" class="contato-card">
+        <span class="c-icon">💬</span><div class="c-label">WhatsApp</div><div class="c-value">Fale Direto</div>
+      </a>
+      <a href="https://instagram.com/SEU_IG_NIGHTDREAMERS" target="_blank" class="contato-card">
+        <span class="c-icon">📸</span><div class="c-label">Instagram</div><div class="c-value">@nightdreamers</div>
+      </a>
+      <a href="https://maps.google.com/?q=Rodovia+Raposo+Tavares+km+38+Vargem+Grande+Paulista" target="_blank" class="contato-card">
+        <span class="c-icon">📍</span><div class="c-label">Localização</div><div class="c-value">Cotia / VGP · SP</div>
+      </a>
+    </div>
+    <a href="https://wa.me/SEUNUMERO" class="btn-primary reveal">Quero ser Parceiro →</a>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-left">
+    <div class="footer-logo-img">LOGO</div>
+    <div class="footer-logo">NIGHTDREAMERS</div>
+  </div>
+  <div class="footer-tagline">Eles Sonham Sobre Rodas</div>
+  <div class="footer-copy">© 2025 Nightdreamers · Cotia / VGP · SP</div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════════════════════ -->
+<script>
+  // ── Cursor Glow
+  const glow = document.getElementById('cursorGlow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+
+  // ── Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+
+  // ── Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── Counter animation
+  function animateCounter(el) {
+    const target = +el.dataset.target;
+    const suffix = el.dataset.suffix !== undefined ? el.dataset.suffix : '+';
+    const dur = 2000, step = target / (dur / 16);
+    let current = 0;
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { el.textContent = target + suffix; clearInterval(timer); }
+      else el.textContent = Math.floor(current) + suffix;
+    }, 16);
+  }
+  const counterObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target); counterObs.unobserve(e.target); } });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.stat-num[data-target]').forEach(el => counterObs.observe(el));
+
+  // ════════════════════════════════════════════════════════
+  //  COUNTDOWN — 3ª EDIÇÃO NIGHTDREAMERS
+  //
+  //  ✏️  ALTERE APENAS ESTA LINHA para mudar a data:
+  //  Formato: 'AAAA-MM-DDTHH:MM:SS'
+  //  Exemplo: '2025-12-20T20:00:00' = 20 de Dez de 2025 às 20h
+  // ════════════════════════════════════════════════════════
+  const EVENT_DATE = new Date('2025-08-16T20:00:00');
+
+  // Exibe a data formatada no subtítulo
+  const dateDisplay = document.getElementById('countdownDateDisplay');
+  if (dateDisplay) {
+    const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+    const formatted = EVENT_DATE.toLocaleDateString('pt-BR', opts);
+    dateDisplay.textContent = '📅 ' + formatted.charAt(0).toUpperCase() + formatted.slice(1) + ' · 20h00';
+  }
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function flipAnim(el, newVal) {
+    const cur = el.textContent;
+    if (cur !== newVal) {
+      el.classList.add('flip');
+      setTimeout(() => { el.textContent = newVal; el.classList.remove('flip'); }, 150);
+    }
+  }
+
+  function updateCountdown() {
+    const now  = new Date();
+    const diff = EVENT_DATE - now;
+
+    if (diff <= 0) {
+      document.getElementById('countdownGrid').innerHTML =
+        '<div class="countdown-ended">🔥 O Evento Chegou! Nos vemos lá! 🔥</div>';
+      return;
+    }
+
+    const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    flipAnim(document.getElementById('cd-days'),    pad(days));
+    flipAnim(document.getElementById('cd-hours'),   pad(hours));
+    flipAnim(document.getElementById('cd-minutes'), pad(minutes));
+    flipAnim(document.getElementById('cd-seconds'), pad(seconds));
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+
+</body>
+</html>
